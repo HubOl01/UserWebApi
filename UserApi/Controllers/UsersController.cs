@@ -38,7 +38,7 @@ public class UsersController : Controller
     [HttpPut("update-user")]
     public IActionResult UpdateUser([FromQuery] string adminLogin, [FromQuery] string targetLogin, [FromBody] UserUpdate request)
     {
-        var success = _service.UpdateUser(targetLogin, request.Name!, request.Gender, request.Birthday, adminLogin);
+        var success = _service.UpdateUser(targetLogin, request.Name, request.Gender, request.Birthday, adminLogin);
         if (!success)
             return BadRequest("Ошибка обновления пользователя");
         return Ok($"{targetLogin} - обновлен успешно");

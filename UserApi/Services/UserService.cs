@@ -26,6 +26,8 @@ public class UserService
     public bool Add(User user)
     {
         if (LoginExists(user.Login)) return false;
+        if (!IsValidLogin(user.Login)) return false;
+        if (!IsValidName(user.Name)) return false;
         if (!IsValidPassword(user.Password)) return false;
         users.Add(user);
         return true;
@@ -35,21 +37,31 @@ public class UserService
     {
         return Regex.IsMatch(password, @"^[a-zA-Z0-9]+$");
     }
+    private bool IsValidLogin(string login)
+    {
+        return Regex.IsMatch(login, @"^[a-zA-Z0-9]+$");
+    }
+
+    private bool IsValidName(string name)
+    {
+        return Regex.IsMatch(name, @"^[a-zA-Zа-яА-ЯёЁ]+$");
+    }
 
 
-    public bool UpdateUser(string targetLogin, string name, int? gender, DateTime? birthday, string actingLogin)
+    public bool UpdateUser(string targetLogin, string? name, int? gender, DateTime? birthday, string adminLogin)
     {
         var target = GetByLogin(targetLogin);
-        var actor = GetByLogin(actingLogin);
+        var actor = GetByLogin(adminLogin);
         if (target == null || actor == null) return false;
         if (target.RevokedOn != null) return false;
-        if (!actor.Admin && actor.Login != target.Login) return false;
+        if (!actor.Admin) return false;
+        if (!IsValidName(name!)) return false;
 
-        target.Name = name;
+        target.Name = name!;
         if (gender.HasValue) target.Gender = gender.Value;
         target.Birthday = birthday;
         target.ModifiedOn = DateTime.UtcNow;
-        target.ModifiedBy = actingLogin;
+        target.ModifiedBy = adminLogin;
         return true;
     }
 
@@ -71,6 +83,7 @@ public class UserService
         if (target == null) return false;
         if (target.RevokedOn != null) return false;
         if (!target.Admin) return false;
+        if (!IsValidLogin(newLogin)) return false;
         if (LoginExists(newLogin)) return false;
 
         target.Login = newLogin;
