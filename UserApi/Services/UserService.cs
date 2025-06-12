@@ -1,5 +1,8 @@
 // namespace UserApi.Services;
 
+
+using System.Text.RegularExpressions;
+
 public class UserService
 {
     private static readonly List<User> users = new List<User>();
@@ -23,9 +26,16 @@ public class UserService
     public bool Add(User user)
     {
         if (LoginExists(user.Login)) return false;
+        if (!IsValidPassword(user.Password)) return false;
         users.Add(user);
         return true;
     }
+
+    private bool IsValidPassword(string password)
+    {
+        return Regex.IsMatch(password, @"^[a-zA-Z0-9]+$");
+    }
+
 
     public bool UpdateUser(string targetLogin, string name, int? gender, DateTime? birthday, string actingLogin)
     {
@@ -47,6 +57,7 @@ public class UserService
     {
         var target = GetByLogin(login);
         if (target!.RevokedOn != null) return false;
+        if (!IsValidPassword(newPassword)) return false;
 
         target.Password = newPassword;
         target.ModifiedOn = DateTime.UtcNow;

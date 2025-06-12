@@ -16,9 +16,6 @@ public class UsersController : Controller
         if (admin == null || !admin.Admin || admin.RevokedOn != null)
             return Unauthorized("Создавать пользователей могут только админы");
 
-        if (_service.LoginExists(newUser.Login))
-            return BadRequest("Логин уже есть");
-
         var user = new User
         {
             Guid = Guid.NewGuid(),
@@ -31,7 +28,10 @@ public class UsersController : Controller
             CreatedBy = adminLogin,
             CreatedOn = DateTime.UtcNow,
         };
-        _service.Add(user);
+
+        if (!_service.Add(user))
+            return BadRequest("Логин уже есть или неверно указан пароль");
+
         return Ok(user);
     }
 

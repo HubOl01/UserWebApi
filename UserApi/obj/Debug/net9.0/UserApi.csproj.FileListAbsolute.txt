@@ -33,3 +33,4 @@
 /Users/oleg/Work/MyProjects/UserApi/UserApi/obj/Debug/net9.0/UserApi.pdb
 /Users/oleg/Work/MyProjects/UserApi/UserApi/obj/Debug/net9.0/UserApi.genruntimeconfig.cache
 /Users/oleg/Work/MyProjects/UserApi/UserApi/obj/Debug/net9.0/ref/UserApi.dll
+/Users/oleg/Work/MyProjects/UserApi/UserApi/obj/Debug/net9.0/UserApi.sourcelink.json
